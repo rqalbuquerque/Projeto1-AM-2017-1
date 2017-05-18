@@ -9,7 +9,7 @@ function classIndexes = partitions_data(dataBase, classNames)
     for i=1:n
         c = cell2mat(dataBase.textdata(i+1,1));
         index = find(strcmp(classNames, c));
-        classIndexes(index) = [classIndexes{index} i];
+        classIndexes{index} = [classIndexes{index} i];
     end
     
 end
