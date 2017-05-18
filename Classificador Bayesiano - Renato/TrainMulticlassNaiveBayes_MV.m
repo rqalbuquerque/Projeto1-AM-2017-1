@@ -20,30 +20,31 @@ classSamples = partitions_data(RGB_view_db,classNames);
 
 % -------------------------------- Treino --------------------------------
 
-%Probabilidade a Priori
-priori_prob = zeros(C,1);
-for i=1:C
-    indexes = classSamples{i};
-    priori_prob(i) = length(indexes)/M;
-end
-
-%Probabilidade a Posteriori
+%Parametros da normal multivariada
 MU = zeros(C,d);
 SIGMA = zeros(C,d);
 for i=1:C
     indexes = classSamples{i};
     MU(i,:) = mean(RGB_view_db.data(indexes,:));
-    SIGMA(i,:) = std(RGB_view_db.data(indexes,:));
+    SIGMA(i,:) = var(RGB_view_db.data(indexes,:),1);
 end
 
-density = zeros(C,1);
+%Probabilidade a Priori
+p_w = zeros(C,1);
 for i=1:C
-	X = RGB_view_db.data(2000,:);
-	density(i) = (2*pi)^(-d/2) * exp (-sumsq ((X-MU(i,:))/SIGMA(i,:), 2)/2) / prod (SIGMA(i,:));
-    %density(i) = mvnpdf(RGB_view_db.data(1199,:),MU(i,:),SIGMA(i,:));
+    indexes = classSamples{i};
+    p_w(i) = length(indexes)/M;
 end
 
-density
+%Probabilidade a posteriori
+x = RGB_view_db.data(500,:);
+p_x_w = zeros(C,1);
 for i=1:C
-    (density(i)*priori_prob(i))/((density')*priori_prob)
+	p_x_w(i) = calc_mvnpdf(x, MU(i,:), SIGMA(i,:));
 end
+
+p_w_x = zeros(C,1);
+p_w_x = (p_x_w .* p_w) ./ (p_x_w' * p_w);
+
+[value, index] = max(p_w_x);
+index
