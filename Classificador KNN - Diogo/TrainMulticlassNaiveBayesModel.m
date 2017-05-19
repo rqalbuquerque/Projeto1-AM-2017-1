@@ -1,7 +1,7 @@
 %Lendo os dados das views
 %Dados das planilhas foram colocados em ordem de acordo com a classes
-shape_view_order = 'D:\\UFPE\\Mestrado\\2017.1\\Aprendizagem de Máquina\\Francisco\\Projeto\\Dados\\shape_view_order.csv';
-RGB_view_order = 'D:\\UFPE\\Mestrado\\2017.1\\Aprendizagem de Máquina\\Francisco\\Projeto\\Dados\\RGB_view_order.csv';
+shape_view_order = '../Data Base Image Segmentation/shape_view_order.csv';
+RGB_view_order = '../Data Base Image Segmentation/RGB_view_order.csv';
 delimiterIn = ',';
 headerlinesIn = 1;
 RGB_view = importdata(RGB_view_order,delimiterIn,headerlinesIn);
