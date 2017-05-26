@@ -15,42 +15,63 @@ vector_matrix_dissimilarity = cell(2,1);
 %obtendo a matriz de dissmilaridade para cada view
 vector_matrix_dissimilarity{1} = squareform(pdist(shape_view.data,'euclidean'));  % euclidean distance
 vector_matrix_dissimilarity{2} = squareform(pdist(RGB_view.data,'euclidean'));  % euclidean distance 
-
+epson = 10^(-10);
 
 f = [];
-% Inicialização
-[ vector_weights, vector_prototypes] = initParams(2100,7);
 
-% Matriz de Pertinencia
-matrix_membership_degree = pertinence( vector_matrix_dissimilarity,vector_prototypes,vector_weights,7,2100,3);
 
-for iterator = 1 : 5,
+for aplic = 1: 8
+     % Inicialização
+    [ vector_weights, vector_prototypes] = initParams(2100,7);
+
+    % Matriz de Pertinencia
+    matrix_membership_degree = pertinence( vector_matrix_dissimilarity,vector_prototypes,vector_weights,7,2100,3);
     
-    % Calculate Objective
-    J = objective( vector_matrix_dissimilarity,vector_prototypes,vector_weights,matrix_membership_degree, 7,2100,3 );
-    
+    %calculate objective    
+    J = objective( vector_matrix_dissimilarity,vector_prototypes,vector_weights,matrix_membership_degree, 7,2100,3 );    
     f = [f J];
     
-    % calculate prototypes
-    vector_prototypes = prototypes( vector_matrix_dissimilarity,vector_weights,matrix_membership_degree,2100,7,3);
-    % calculate vectors weights
-    vector_weights = weights( vector_matrix_dissimilarity,vector_prototypes,matrix_membership_degree, 7,2100,3 );
-
-    % test calculate weights vector
-    sum_weights = 0;
-    for i = 1:7,
-        sum_weights = sum_weights + prod(vector_weights{1});
+    for iterator = 1 : 40
+       
+        % calculate prototypes
+        vector_prototypes = prototypes( vector_matrix_dissimilarity,vector_weights,matrix_membership_degree,2100,7,3);
+        % calculate vectors weights
+        vector_weights = weights( vector_matrix_dissimilarity,vector_prototypes,matrix_membership_degree, 7,2100,3 );
+        
+        % Pertinence Matrix
+        matrix_membership_degree = pertinence( vector_matrix_dissimilarity,vector_prototypes,vector_weights, 7,2100,3);
+         
+        %calculate objective    
+        J = objective( vector_matrix_dissimilarity,vector_prototypes,vector_weights,matrix_membership_degree, 7,2100,3 );    
+        f = [f J];
+        f
+        if abs(f(iterator) - J) < epson
+            iterator = 20;
+        end
+        
     end
-    sum_weights
     
-    % Pertinence Matrix
-    matrix_membership_degree = pertinence( vector_matrix_dissimilarity,vector_prototypes,vector_weights, 7,2100,3);
+    if aplic == 1
+        best_vector_prototypes = vector_prototypes;
+        best_vector_weights = vector_weights;
+        best_matrix_membership_degree = matrix_membership_degree;
+        best_J = f;
+        final_j = J;
+    else
+        if final_j > J
+            best_vector_prototypes = vector_prototypes;
+            best_vector_weights = vector_weights;
+            best_matrix_membership_degree = matrix_membership_degree;
+            best_J = f;
+            final_j = J;
+        end
+    end
     
+    f = [];
+   
     
-  
 end
 
-J = objective( vector_matrix_dissimilarity,vector_prototypes,vector_weights,matrix_membership_degree, 7,2100,3 );
-f = [f J];
+
 
     

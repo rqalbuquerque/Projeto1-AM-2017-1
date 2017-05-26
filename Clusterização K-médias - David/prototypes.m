@@ -28,7 +28,7 @@ for k = 1:K,
     for g = 1:q,
    
     [M,I] = min(vector_prototypes_argmin(k,:));
-    I
+  
     vector_prototypes{k}(g) =  I;
     vector_prototypes_argmin(k,I) = 100000;
     end
