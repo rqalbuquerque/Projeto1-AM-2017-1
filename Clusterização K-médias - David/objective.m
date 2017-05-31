@@ -9,13 +9,13 @@ result = 0.0;
             sum_distance = 0.0;
             for j = 1 : 2,
                 for g = 1 : q,
-                    sum_distance = sum_distance + vector_matrix_dissimilarity{j}(i,vector_prototypes{k}(g));
+                    sum_distance = (sum_distance + (vector_matrix_dissimilarity{j}(i,vector_prototypes{k}(g))));
                 end
-                first_partial = first_partial + vector_weights{k}(j)*sum_distance;
+                first_partial = (first_partial + (vector_weights{k}(j)*sum_distance));
             end
-            sum_object = sum_object + (matrix_membership_degree(i,k)^1.6)*first_partial;
+            sum_object = (sum_object + ((matrix_membership_degree(i,k)^(1.6))*first_partial));
         end
-        result = result +sum_object;
+        result = result + sum_object;
     end
 
 end
