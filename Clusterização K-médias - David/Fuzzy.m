@@ -21,7 +21,7 @@ epson = 10^(-5);
 %agrupa os valores da função objetivo
 f = [];
 
-for aplic = 1: 1
+for aplic = 1: 10
     % Inicialização
     [ vector_weights, vector_prototypes] = initParams(2100,7);
     fprintf('\n###### Prototipos ######\n');
@@ -37,7 +37,7 @@ for aplic = 1: 1
     J = objective( vector_matrix_dissimilarity,vector_prototypes,vector_weights,matrix_membership_degree, 7,2100,3 );
     f = [f J];
     J
-    for iterator = 1 : 20
+    for iterator = 1 : 5
         
         % calculate prototypes
         vector_prototypes = prototypes( vector_matrix_dissimilarity,vector_weights,matrix_membership_degree,2100,7,3);
@@ -46,7 +46,7 @@ for aplic = 1: 1
             g = sprintf('%d ', vector_prototypes{i});
             fprintf('Group %d: [ %s ] \n',i,g );
         end
-        % calculate vectors weights
+%         calculate vectors weights
         vector_weights = weights( vector_matrix_dissimilarity,vector_prototypes,matrix_membership_degree, 7,2100,3 );
         fprintf('\n###### Vetor de Pesos ######\n');
         for i = 1 : 7
@@ -94,7 +94,7 @@ for aplic = 1: 1
 end
 
 %retorna o resultado da melhor partição
-result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view);
+result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view,vector_prototypes);
 
 
 

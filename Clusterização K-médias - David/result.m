@@ -1,6 +1,13 @@
-function  result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view )
+function  result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view ,vector_prototypes)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
+fprintf('\n###### Prototipos ######\n');
+for i = 1 : 7
+    g = sprintf('%d ', vector_prototypes{i});
+    fprintf('Group %d: [ %s ] \n',i,g );
+end
+
+
 fprintf('\n###### Vetor de Pesos ######\n');
 for i = 1 : 7
     g = sprintf('%f ', best_vector_weights{i});
@@ -24,15 +31,15 @@ for i = 1:2100
     partition_original(i) = index;
 end
 
- fprintf('\n\n### Quantidade de Elementos em cada grupo da partição Hard ###\n');
- 
+fprintf('\n\n### Quantidade de Elementos em cada grupo da partição Hard ###\n');
+
 for i = 1: 7
     fprintf('%d Group: %d \n',i, length(hard_partition{i}));
 end
- fprintf('\n');
- 
-  fprintf('\n\n### Partição Exclusiva  ###\n');
- hard_class = zeros(1,2100);
+fprintf('\n');
+
+fprintf('\n\n### Partição Exclusiva  ###\n');
+contigency_table = zeros(7,7);
 for i = 1:7
     size = length(hard_partition{i});
     BRICKFACE = 0;
@@ -44,11 +51,11 @@ for i = 1:7
     WINDOW = 0;
     
     for j = 1 : size
-       
+        
         if strcmp(array( hard_partition{i}(j)),'BRICKFACE')
             BRICKFACE = BRICKFACE + 1;
         elseif strcmp(array( hard_partition{i}(j)),'CEMENT')
-             CEMENT = CEMENT +1;
+            CEMENT = CEMENT +1;
         elseif strcmp(array( hard_partition{i}(j)),'FOLIAGE')
             FOLIAGE = FOLIAGE + 1;
         elseif strcmp(array( hard_partition{i}(j)),'GRASS')
@@ -72,16 +79,20 @@ for i = 1:7
     fprintf('WINDOW: %d \n',WINDOW);
     fprintf('\n');
     
-    [A I] = max([BRICKFACE,CEMENT,FOLIAGE,GRASS,PATH,SKY,WINDOW]);
     
-    for k  =  1 : size
-       hard_class(hard_partition{i}(k))  = I;  
-    end
+    contigency_table(1,i) = BRICKFACE;
+    contigency_table(2,i) = CEMENT;
+    contigency_table(3,i) = FOLIAGE;
+    contigency_table(4,i) = GRASS;
+    contigency_table(5,i) = PATH;
+    contigency_table(6,i) = SKY;
+    contigency_table(7,i) = WINDOW;
+    
 end
 
-[AR,RI,MI,HI]=RandIndex(partition_original,hard_class);
+[indice]=RandIndex(contigency_table);
 
-fprintf('\nIndice de Rand Corrigido: %d\n',AR);
+fprintf('\nIndice de Rand Corrigido: %d\n',indice);
 
 end
 
