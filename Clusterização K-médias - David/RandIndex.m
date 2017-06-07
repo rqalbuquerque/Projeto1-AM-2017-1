@@ -1,7 +1,7 @@
 function [adjusted_index]=RandIndex(contigency_table)
     total = 2100;
     index = 0.0;
-    
+   
     for i = 1 : 7
         result = 0.0;
        for j = 1: 7 
@@ -42,6 +42,6 @@ function [adjusted_index]=RandIndex(contigency_table)
     max_index = (0.5 * (first_partial + second_partial ));
     
     
-    adjusted_index = (index - expected_index) / (max_index - expected_index);
+    adjusted_index = ((index - expected_index) / (max_index - expected_index));
 end
 

@@ -19,8 +19,8 @@ for k = 1: K,
                 end
                 numerator = (numerator + (vector_weights{k}(j)*sum_numerator));
                 denominator = denominator + (vector_weights{h}(j)*sum_denominator);
-                partial = ((numerator/denominator)^(1.0/(1.6-1.0)));
             end
+            partial = ((numerator/denominator)^(1.0/(1.6-1.0)));
             
             sum_finish = sum_finish + partial;
         end

@@ -80,13 +80,13 @@ for i = 1:7
     fprintf('\n');
     
     
-    contigency_table(1,i) = BRICKFACE;
-    contigency_table(2,i) = CEMENT;
-    contigency_table(3,i) = FOLIAGE;
-    contigency_table(4,i) = GRASS;
-    contigency_table(5,i) = PATH;
-    contigency_table(6,i) = SKY;
-    contigency_table(7,i) = WINDOW;
+    contigency_table(i,1) = BRICKFACE;
+    contigency_table(i,2) = CEMENT;
+    contigency_table(i,3) = FOLIAGE;
+    contigency_table(i,4) = GRASS;
+    contigency_table(i,5) = PATH;
+    contigency_table(i,6) = SKY;
+    contigency_table(i,7) = WINDOW;
     
 end
 

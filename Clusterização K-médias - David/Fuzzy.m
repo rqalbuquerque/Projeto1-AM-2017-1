@@ -21,7 +21,7 @@ epson = 10^(-5);
 %agrupa os valores da função objetivo
 f = [];
 
-for aplic = 1: 10
+for aplic = 1: 1
     % Inicialização
     [ vector_weights, vector_prototypes] = initParams(2100,7);
     fprintf('\n###### Prototipos ######\n');
@@ -37,7 +37,7 @@ for aplic = 1: 10
     J = objective( vector_matrix_dissimilarity,vector_prototypes,vector_weights,matrix_membership_degree, 7,2100,3 );
     f = [f J];
     J
-    for iterator = 1 : 5
+    for iterator = 1 : 20
         
         % calculate prototypes
         vector_prototypes = prototypes( vector_matrix_dissimilarity,vector_weights,matrix_membership_degree,2100,7,3);
