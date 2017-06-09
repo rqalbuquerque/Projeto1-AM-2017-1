@@ -1,3 +1,4 @@
+%%
 %Função que gera uma estimativa pontual e um intervalo de confiança
 %a cerca do conjunto de valores de entrada.
 %Entrada:
@@ -7,6 +8,7 @@
 % pd    - estimativa pontual da distribuição de probabilidade normal
 % ci    - intervalo de confiança para os valores de estimativa pontual
 
+%%
 function [pd,ci] = funcGenConfidenceInterval(x, conf)
 
     if conf <= 0.0
