@@ -1,7 +1,7 @@
 %Lendo os dados das views
 %Dados das planilhas foram colocados em ordem de acordo com a classes
-shape_view_order = 'D:\\UFPE\\Mestrado\\2017.1\\Aprendizagem de M·quina\\Francisco\\Projeto\\Dados\\shape_view_order.csv';
-RGB_view_order = 'D:\\UFPE\\Mestrado\\2017.1\\Aprendizagem de M·quina\\Francisco\\Projeto\\Dados\\RGB_view_order.csv';
+shape_view_order = 'D:\\UFPE\\Mestrado\\2017.1\\Aprendizagem de M√°quina\\Francisco\\Projeto\\Dados\\shape_view_order.csv';
+RGB_view_order = 'D:\\UFPE\\Mestrado\\2017.1\\Aprendizagem de M√°quina\\Francisco\\Projeto\\Dados\\RGB_view_order.csv';
 delimiterIn = ',';
 headerlinesIn = 1;
 RGB_view = importdata(RGB_view_order,delimiterIn,headerlinesIn);
@@ -13,7 +13,7 @@ Y2 = RGB_view.textdata(2:2101,1);
 Y3 = shape_view.textdata(2:2101,1);
 Y4 = RGB_view.textdata(2:2101,1);
 
-%DeclaraÁ„o das classes na ordem que aparecem nos dados
+%Declara√ß√£o das classes na ordem que aparecem nos dados
 classNames = {'BRICKFACE', 'CEMENT', 'FOLIAGE','GRASS', 'PATH', 'SKY','WINDOW'}; 
 
 %Dados shape_view
@@ -103,36 +103,36 @@ normDataV10_RGB = (V10_RGB - minValV10_RGB) / ( maxValV10_RGB - minValV10_RGB );
 
 RGB_view_norm = [normDataV1_RGB,normDataV2_RGB,normDataV3_RGB,normDataV4_RGB,normDataV5_RGB,normDataV6_RGB,normDataV7_RGB,normDataV8_RGB,normDataV9_RGB,normDataV10_RGB];
 
-%DeclaraÁ„o das distribuiÁıes em cada vari·vel para o Naive Bayes
+%Declara√ß√£o das distribui√ß√µes em cada vari√°vel para o Naive Bayes
 distribuition1 = {'normal','normal','normal','normal','normal','normal'};
 distribuition2 = {'normal','normal','normal','normal','normal','normal','normal','normal','normal','normal'};
 
-%Caso da vari‚ncia da coluna seja zero para o Naive Bayes, a coluna È eliminada(soluÁ„o encontrada no MATLAB Answers)
+%Caso da vari√¢ncia da coluna seja zero para o Naive Bayes, a coluna √© eliminada(solu√ß√£o encontrada no MATLAB Answers)
 shape_view.data(:,3)=[];
 shape_view.data(:,3)=[];
 shape_view.data(:,3)=[];
 
-%FunÁ„o naive bayes
+%Fun√ß√£o naive bayes
 Mdl1 = fitcnb(shape_view.data,Y1,'ClassNames',classNames,'Distribution', distribuition1);
 Mdl2 = fitcnb(RGB_view.data,Y2,'ClassNames',classNames,'Distribution', distribuition2);
 
-%FunÁ„o KNN
-Mdl3 = fitcknn(shape_view_norm,Y3,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acur·cia
-Mdl4 = fitcknn(RGB_view_norm,Y4,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acur·cia
+%Fun√ß√£o KNN
+Mdl3 = fitcknn(shape_view_norm,Y3,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acur√°cia
+Mdl4 = fitcknn(RGB_view_norm,Y4,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acur√°cia
 
-%DeclaraÁ„o dos vetores
+%Declara√ß√£o dos vetores
 accuracy1 = 1:30;
 accuracy2 = 1:30;
 accuracy3 = 1:30;
 accuracy4 = 1:30;
 
-%Dividindo os dados com estratificaÁ„o
+%Dividindo os dados com estratifica√ß√£o
 stratifiedKfold1 = cvpartition(Y1,'KFold',10);
 stratifiedKfold2 = cvpartition(Y2,'KFold',10);
 stratifiedKfold3 = cvpartition(Y3,'KFold',10);
 stratifiedKfold4 = cvpartition(Y4,'KFold',10);
 
-%30 repetiÁıes do 10-fold cross validation 
+%30 repeti√ß√µes do 10-fold cross validation 
  for i = 1:30
         Mdl1cvmodel = crossval(Mdl1,'cvpartition',stratifiedKfold1);
         accuracy1(i) = sum(strcmp(Y1,kfoldPredict(Mdl1cvmodel))) / numel(Y1);
@@ -144,31 +144,31 @@ stratifiedKfold4 = cvpartition(Y4,'KFold',10);
         accuracy4(i) = sum(strcmp(Y4,kfoldPredict(Mdl4cvmodel))) / numel(Y4);
  end
  
-%MÈdia da acur·cia 
+%M√©dia da acur√°cia 
 accuracy1Afterkfold = sum(accuracy1)/30;
 accuracy2Afterkfold = sum(accuracy2)/30;
 accuracy3Afterkfold = sum(accuracy3)/30;
 accuracy4Afterkfold = sum(accuracy4)/30;
  
-%Previsıes dos modelos
+%Previs√µes dos modelos
 predMdl1cvmodel = kfoldPredict(Mdl1cvmodel);
 predMdl2cvmodel = kfoldPredict(Mdl2cvmodel);
 predMdl3cvmodel = kfoldPredict(Mdl3cvmodel);
 predMdl4cvmodel = kfoldPredict(Mdl4cvmodel);
 
-%Matriz de 4 colunas com as previsıes dos 4 modelos 
+%Matriz de 4 colunas com as previs√µes dos 4 modelos 
 predMdlcvmodel = [predMdl1cvmodel,predMdl2cvmodel,predMdl3cvmodel,predMdl4cvmodel];
 
-%DeclaraÁ„o de Vetores de n˙meros para utilizar como auxÌlio na funÁ„o mode como voto majorit·rio 
+%Declara√ß√£o de Vetores de n√∫meros para utilizar como aux√≠lio na fun√ß√£o mode com o voto majorit√°rio 
 predMdl1cvmodelnum = 1:2100;
 predMdl2cvmodelnum = 1:2100;
 predMdl3cvmodelnum = 1:2100;
 predMdl4cvmodelnum = 1:2100;
 
-%Inserindo os n˙meros nos 4 vetores que correspondem ‡s classes
+%Inserindo os n√∫meros(1 a 7) nos 4 vetores associados √†s classes
 for n = 1:2100
 	if(strcmp(predMdl1cvmodel(n),'BRICKFACE'))
-        predMdl1cvmodelnum(n)=1;
+        	predMdl1cvmodelnum(n)=1;
 	elseif(strcmp(predMdl1cvmodel(n),'CEMENT'))
 		predMdl1cvmodelnum(n)=2;
 	elseif(strcmp(predMdl1cvmodel(n),'FOLIAGE'))
@@ -186,7 +186,7 @@ end
 
 for n = 1:2100
 	if(strcmp(predMdl2cvmodel(n),'BRICKFACE'))
-        predMdl2cvmodelnum(n)=1;
+                predMdl2cvmodelnum(n)=1;
 	elseif(strcmp(predMdl2cvmodel(n),'CEMENT'))
 		predMdl2cvmodelnum(n)=2;
 	elseif(strcmp(predMdl2cvmodel(n),'FOLIAGE'))
@@ -204,7 +204,7 @@ end
 
 for n = 1:2100
 	if(strcmp(predMdl3cvmodel(n),'BRICKFACE'))
-        predMdl3cvmodelnum(n)=1;
+                predMdl3cvmodelnum(n)=1;
 	elseif(strcmp(predMdl3cvmodel(n),'CEMENT'))
 		predMdl3cvmodelnum(n)=2;
 	elseif(strcmp(predMdl3cvmodel(n),'FOLIAGE'))
@@ -222,7 +222,7 @@ end
 
 for n = 1:2100
 	if(strcmp(predMdl4cvmodel(n),'BRICKFACE'))
-        predMdl4cvmodelnum(n)=1;
+                predMdl4cvmodelnum(n)=1;
 	elseif(strcmp(predMdl4cvmodel(n),'CEMENT'))
 		predMdl4cvmodelnum(n)=2;
 	elseif(strcmp(predMdl4cvmodel(n),'FOLIAGE'))
@@ -238,25 +238,24 @@ for n = 1:2100
     end
 end
  
-%Matriz de 4 colunas com as previsıes dos 4 modelos agora em n˙meros 
+%Matriz com as previs√µes dos 4 modelos agora em n√∫meros 
 predMdlcvmodelnum = [predMdl1cvmodelnum;predMdl2cvmodelnum;predMdl3cvmodelnum;predMdl4cvmodelnum];
 
-%DeclaraÁ„o de um Vetor de n˙meros para utilizar a funÁ„o mode como voto majorit·rio 
+%Declara√ß√£o de um Vetor de n√∫meros para utilizar a fun√ß√£o mode como voto majorit√°rio 
 predMdlcvmodelnumVote = 1:2100;
 
-%Voto majorit·rio
+%Voto majorit√°rio
 for n = 1:2100
      predMdlcvmodelnumVote(n) = mode(predMdlcvmodelnum(1:4,n));
-     
 end
 
-%DeclaraÁ„o do vetor para numerar as classes de referÍncia; 
+%Declara√ß√£o do vetor para numerar as classes de refer√™ncia; 
 Y1num = 1:2100;
 
-%Loop para converter o array de classes de referÍncia em um vetor de n˙meros
+%Loop para associar o array de classes de refer√™ncia a um vetor de n√∫meros de 1 a 7
 for n = 1:2100
 	if(strcmp(Y1(n),'BRICKFACE'))
-        Y1num(n)=1;
+                Y1num(n)=1;
 	elseif(strcmp(Y1(n),'CEMENT'))
 		Y1num(n)=2;
 	elseif(strcmp(Y1(n),'FOLIAGE'))
@@ -272,7 +271,7 @@ for n = 1:2100
     end
 end
 
-%Acur·cia apÛs o voto majorit·rio;
+%Acur√°cia ap√≥s o voto majorit√°rio;
 accuracyFinal = sum(Y1num==predMdlcvmodelnumVote) / numel(Y1num);
 
 
