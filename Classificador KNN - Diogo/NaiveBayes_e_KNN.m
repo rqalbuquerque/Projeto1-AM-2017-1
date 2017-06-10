@@ -9,9 +9,9 @@ shape_view = importdata(shape_view_order,delimiterIn,headerlinesIn);
 
 %Dados da coluna das classes
 Y1 = shape_view.textdata(2:2101,1);
-Y2 = RGB_view.textdata(2:2101,1);
-Y3 = shape_view.textdata(2:2101,1);
-Y4 = RGB_view.textdata(2:2101,1);
+%Y2 = RGB_view.textdata(2:2101,1);
+%Y3 = shape_view.textdata(2:2101,1);
+%Y4 = RGB_view.textdata(2:2101,1);
 
 %Declaração das classes na ordem que aparecem nos dados
 classNames = {'BRICKFACE', 'CEMENT', 'FOLIAGE','GRASS', 'PATH', 'SKY','WINDOW'}; 
@@ -114,11 +114,12 @@ shape_view.data(:,3)=[];
 
 %Função naive bayes
 Mdl1 = fitcnb(shape_view.data,Y1,'ClassNames',classNames,'Distribution', distribuition1);
-Mdl2 = fitcnb(RGB_view.data,Y2,'ClassNames',classNames,'Distribution', distribuition2);
+Mdl2 = fitcnb(RGB_view.data,Y1,'ClassNames',classNames,'Distribution', distribuition2);
+
 
 %Função KNN
-Mdl3 = fitcknn(shape_view_norm,Y3,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acurácia
-Mdl4 = fitcknn(RGB_view_norm,Y4,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acurácia
+Mdl3 = fitcknn(shape_view_norm,Y1,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acurácia
+Mdl4 = fitcknn(RGB_view_norm,Y1,'ClassNames',classNames,'Distance','euclidean','NumNeighbors',3); %3 melhor acurácia
 
 %Declaração dos vetores
 accuracy1 = 1:30;
@@ -128,27 +129,27 @@ accuracy4 = 1:30;
 
 %Dividindo os dados com estratificação
 stratifiedKfold1 = cvpartition(Y1,'KFold',10);
-stratifiedKfold2 = cvpartition(Y2,'KFold',10);
-stratifiedKfold3 = cvpartition(Y3,'KFold',10);
-stratifiedKfold4 = cvpartition(Y4,'KFold',10);
+%stratifiedKfold2 = cvpartition(Y2,'KFold',10);
+%stratifiedKfold3 = cvpartition(Y3,'KFold',10);
+%stratifiedKfold4 = cvpartition(Y4,'KFold',10);
 
 %30 repetições do 10-fold cross validation 
  for i = 1:30
         Mdl1cvmodel = crossval(Mdl1,'cvpartition',stratifiedKfold1);
         accuracy1(i) = sum(strcmp(Y1,kfoldPredict(Mdl1cvmodel))) / numel(Y1);
-        Mdl2cvmodel = crossval(Mdl2,'cvpartition',stratifiedKfold2);
-        accuracy2(i) = sum(strcmp(Y2,kfoldPredict(Mdl2cvmodel))) / numel(Y2);
+        Mdl2cvmodel = crossval(Mdl2,'cvpartition',stratifiedKfold1);
+        accuracy2(i) = sum(strcmp(Y1,kfoldPredict(Mdl2cvmodel))) / numel(Y1);
         Mdl3cvmodel = crossval(Mdl3,'cvpartition',stratifiedKfold1);
-        accuracy3(i) = sum(strcmp(Y3,kfoldPredict(Mdl3cvmodel))) / numel(Y3);
-        Mdl4cvmodel = crossval(Mdl4,'cvpartition',stratifiedKfold4);
-        accuracy4(i) = sum(strcmp(Y4,kfoldPredict(Mdl4cvmodel))) / numel(Y4);
+        accuracy3(i) = sum(strcmp(Y1,kfoldPredict(Mdl3cvmodel))) / numel(Y1);
+        Mdl4cvmodel = crossval(Mdl4,'cvpartition',stratifiedKfold1);
+        accuracy4(i) = sum(strcmp(Y1,kfoldPredict(Mdl4cvmodel))) / numel(Y1);
  end
  
 %Média da acurácia 
-accuracy1Afterkfold = sum(accuracy1)/30;
-accuracy2Afterkfold = sum(accuracy2)/30;
-accuracy3Afterkfold = sum(accuracy3)/30;
-accuracy4Afterkfold = sum(accuracy4)/30;
+accuracy1After30Kfold = sum(accuracy1)/30;
+accuracy2After30Kfold = sum(accuracy2)/30;
+accuracy3After30Kfold = sum(accuracy3)/30;
+accuracy4After30Kfold = sum(accuracy4)/30;
  
 %Previsões dos modelos
 predMdl1cvmodel = kfoldPredict(Mdl1cvmodel);
@@ -159,7 +160,7 @@ predMdl4cvmodel = kfoldPredict(Mdl4cvmodel);
 %Matriz de 4 colunas com as previsões dos 4 modelos 
 predMdlcvmodel = [predMdl1cvmodel,predMdl2cvmodel,predMdl3cvmodel,predMdl4cvmodel];
 
-%Declaração de Vetores de números para utilizar como auxílio na função mode com o voto majoritário 
+%Declaração de Vetores de números para utilizar como auxílio na função mode com o voto majoritário
 predMdl1cvmodelnum = 1:2100;
 predMdl2cvmodelnum = 1:2100;
 predMdl3cvmodelnum = 1:2100;
@@ -168,7 +169,7 @@ predMdl4cvmodelnum = 1:2100;
 %Inserindo os números(1 a 7) nos 4 vetores associados às classes
 for n = 1:2100
 	if(strcmp(predMdl1cvmodel(n),'BRICKFACE'))
-        	predMdl1cvmodelnum(n)=1;
+        predMdl1cvmodelnum(n)=1;
 	elseif(strcmp(predMdl1cvmodel(n),'CEMENT'))
 		predMdl1cvmodelnum(n)=2;
 	elseif(strcmp(predMdl1cvmodel(n),'FOLIAGE'))
@@ -186,7 +187,7 @@ end
 
 for n = 1:2100
 	if(strcmp(predMdl2cvmodel(n),'BRICKFACE'))
-                predMdl2cvmodelnum(n)=1;
+        predMdl2cvmodelnum(n)=1;
 	elseif(strcmp(predMdl2cvmodel(n),'CEMENT'))
 		predMdl2cvmodelnum(n)=2;
 	elseif(strcmp(predMdl2cvmodel(n),'FOLIAGE'))
@@ -204,7 +205,7 @@ end
 
 for n = 1:2100
 	if(strcmp(predMdl3cvmodel(n),'BRICKFACE'))
-                predMdl3cvmodelnum(n)=1;
+        predMdl3cvmodelnum(n)=1;
 	elseif(strcmp(predMdl3cvmodel(n),'CEMENT'))
 		predMdl3cvmodelnum(n)=2;
 	elseif(strcmp(predMdl3cvmodel(n),'FOLIAGE'))
@@ -222,7 +223,7 @@ end
 
 for n = 1:2100
 	if(strcmp(predMdl4cvmodel(n),'BRICKFACE'))
-                predMdl4cvmodelnum(n)=1;
+        predMdl4cvmodelnum(n)=1;
 	elseif(strcmp(predMdl4cvmodel(n),'CEMENT'))
 		predMdl4cvmodelnum(n)=2;
 	elseif(strcmp(predMdl4cvmodel(n),'FOLIAGE'))
@@ -238,24 +239,16 @@ for n = 1:2100
     end
 end
  
-%Matriz com as previsões dos 4 modelos agora em números 
+%Matriz com as previsões dos 4 modelos agora em números
 predMdlcvmodelnum = [predMdl1cvmodelnum;predMdl2cvmodelnum;predMdl3cvmodelnum;predMdl4cvmodelnum];
-
-%Declaração de um Vetor de números para utilizar a função mode como voto majoritário 
-predMdlcvmodelnumVote = 1:2100;
-
-%Voto majoritário
-for n = 1:2100
-     predMdlcvmodelnumVote(n) = mode(predMdlcvmodelnum(1:4,n));
-end
 
 %Declaração do vetor para numerar as classes de referência; 
 Y1num = 1:2100;
 
-%Loop para associar o array de classes de referência a um vetor de números de 1 a 7
+%Loop para associar o array de classes de referência em um vetor de números de 1 a 7
 for n = 1:2100
 	if(strcmp(Y1(n),'BRICKFACE'))
-                Y1num(n)=1;
+        Y1num(n)=1;
 	elseif(strcmp(Y1(n),'CEMENT'))
 		Y1num(n)=2;
 	elseif(strcmp(Y1(n),'FOLIAGE'))
@@ -271,8 +264,39 @@ for n = 1:2100
     end
 end
 
+%Declaração dos vetores para acurácia do voto majoritário com cross validation 
+accuracyCvVote = 1:10;
+accuracyCvVoteAfterKfold = 1:30;
+
+%Loop para 30 repetições do 10-fold cross validation
+for n = 1:30
+    %Voto majoritário somente nos 10 conjuntos disjuntos de teste(10-fold cross
+    %validation), já que é desnecessário o treinamento
+    for i = 1:10 test = stratifiedKfold1.test(i); train = ~test;
+        predMdlcvmodelnumCvVote = mode(predMdlcvmodelnum(1:4,test));
+        accuracyCvVote(i) =  sum(Y1num(test)==predMdlcvmodelnumCvVote) / 210;   
+    end
+
+    %Média da acurácia 
+    accuracyCvVoteAfterKfold(n) = sum(accuracyCvVote)/10;
+end
+
+%Média da acurácia 
+accuracyCvVoteAfter30Kfold = sum(accuracyCvVoteAfterKfold)/30;
+
+%{
+%Declaração de um Vetor de números para utilizar a função mode como voto majoritário 
+predMdlcvmodelnumVote = 1:2100;
+
+
+%Voto majoritário
+for n = 1:2100
+     predMdlcvmodelnumVote(n) = mode(predMdlcvmodelnum(1:4,n));
+     
+end
+
+
+
 %Acurácia após o voto majoritário;
 accuracyFinal = sum(Y1num==predMdlcvmodelnumVote) / numel(Y1num);
-
-
- 
+%}
