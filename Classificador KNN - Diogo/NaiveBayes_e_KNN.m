@@ -271,11 +271,11 @@ for n = 1:30
     %validation), já que é desnecessário o treinamento
     for i = 1:10 test = stratifiedKfold1.test(i); train = ~test;
         predMdlcvmodelnumCvVote = mode(predMdlcvmodelnum(1:4,test));
-        accuracyCvVote(i) =  sum(Y1num(test)==predMdlcvmodelnumCvVote) / 210;   
+        accuracyCvVote(i,n) =  sum(Y1num(test)==predMdlcvmodelnumCvVote) / 210;   
     end
 
     %Média da acurácia 
-    accuracyCvVoteAfterKfold(n) = sum(accuracyCvVote)/10;
+    accuracyCvVoteAfterKfold(n) = sum(accuracyCvVote(:,n))/10;
 end
 
 %Média da acurácia 
