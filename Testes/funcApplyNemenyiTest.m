@@ -1,18 +1,18 @@
 %%
-%Função que aplica o Nemenyi test sobre as médias dos Ranks.
+%Funcao que aplica o Nemenyi test sobre as medias dos Ranks.
 %Entrada:
-% k             - número de avaliações
+% k             - numero de avaliacoes
 % N             - tamanho do conjunto de dados
-% meanRanks     - médias dos Ranks 
-% conf          - nível de confiança para a estatística de teste.
-%Saída:
-% mPared        - resultado do teste para as avaliações
-%                 Dimensões: k x k
+% meanRanks     - medias dos Ranks 
+% conf          - nível de confianca para a estatistica de teste.
+%Saida:
+% mPared        - resultado do teste para as avaliacoes
+%                 Dimensoes: k x k
 
 %%
-function [mtest] = funcApplyNemenyiTest(k, N, meanRanks, conf)
+function [ntest] = funcApplyNemenyiTest(N, k, meanRanks, conf)
     
-    mtest = zeros(k);
+    ntest = zeros(k);
 
     % i = 1 -> alpha = 0.01
     % i = 2 -> alpha = 0.05
@@ -28,13 +28,13 @@ function [mtest] = funcApplyNemenyiTest(k, N, meanRanks, conf)
     else 
         idx = 3;
     end
-            
-    cd = q_alpha(idx,k-1)*sqrt((k*(k+1))/6*N)
+    
+    cd = q_alpha(idx,k-1)*sqrt((k*(k+1))/(6*N));
     
     for i=1:k
        for j=1:k
             if i ~= j
-                mtest(i,j) = abs(meanRanks(i)-meanRanks(j)) >= cd;
+                ntest(i,j) = (meanRanks(i)-meanRanks(j)) >= cd;
             end
        end
     end  
