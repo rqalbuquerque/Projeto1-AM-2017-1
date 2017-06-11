@@ -2,7 +2,7 @@ function indexes = funcConvertNamesToIndexes(x, names)
     
     nSamples = length(x);
     nNames = length(names);
-    indexes = zeros(1,nSamples);
+    indexes = zeros(size(x));
 
     for n=1:nSamples
        for i=1:nNames

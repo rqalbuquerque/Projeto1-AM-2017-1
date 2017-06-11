@@ -25,8 +25,8 @@ function [hypothesis, fEst, cValue, meanRanks] = funcApplyFriedmanTest(x, conf)
     meanRanks = mean(ranks);
     
     % test estatístic
-    X2_F = (12*N/(k*k+k))*(sum(meanRanks.^2) - (k*(k+1)^2)/4);
-    fEst = ((N-1)*X2_F) / (N*(k-1)-X2_F);
+    X2_F = ((12*N)/(k*k+k))*(sum(meanRanks.^2) - (k*(k+1)^2)/4);
+    fEst = ((N-1)*X2_F) / (N*(k-1)-X2_F + eps);
     
     % critical value
     cValue = finv(conf,k-1,(k-1)*(N-1));
@@ -40,3 +40,4 @@ end
 
 
 
+'
