@@ -109,8 +109,6 @@ accuracyVoteAfter30Kfold = sum(accuracyCvVote)/30;
 
 %Valor de confiança
 conf = 0.95;
-
-%Estimativa pontual e intervalo de confianca (alpha = 0.05) da taxa de erro
 [pdNBShapeView,ciNBShapeView] = funcGenConfidenceInterval(errorRateNBShapeView, conf);
 [pdNBRGBView,ciNBRGBView] = funcGenConfidenceInterval(errorRateNBRGBView, conf);
 [pdKNNShapeView,ciKNNShapeView] = funcGenConfidenceInterval(errorRateKNNShapeView, conf);
@@ -123,18 +121,99 @@ accuracyAllClassifiers = [accuracyNBShapeView, ...
                           accuracyKNNShapeView, ...
                           accuracyKNNRGBView, ...
                           accuracyCvVote];
-[hypothesis, fEst, cValue, meanRanks] = funcApplyFriedmanTest(accuracyAllClassifiers, conf);
+[hypothesis, stt, cValue, meanRanks] = funcApplyFriedmanTest(accuracyAllClassifiers, conf);
 
 %Se rejeitar a hipotese nula realiza pós-teste utilizando Nemenyi test
 if hypothesis == 1
     N = size(accuracyAllClassifiers,1);
     k = size(accuracyAllClassifiers,2);
-    [ntest] = funcApplyNemenyiTest(N, k, meanRanks, conf);
+    [ntest, qa] = funcApplyNemenyiTest(N, k, meanRanks, conf);
 end
 
+%Imprime Resultados
+fileID = fopen('Resultados.txt','w');
+
+fprintf(fileID, '--------------------------------------------------------------------------------\n');
+fprintf(fileID, 'Estimativa pontual e intervalo de confianca da taxa de erro medio (alpha = 0.05)\n');
+fprintf(fileID, '--------------------------------------------------------------------------------\n');
+fprintf(fileID, 'Naive Bayes - Shape View\n');
+fprintf(fileID, '\tMedia amostral: %.4f\n',pdNBShapeView(1));
+fprintf(fileID, '\tIC para Media amostral: %.4f - %.4f\n',ciNBShapeView(1,1),ciNBShapeView(2,1));
+fprintf(fileID, '\tVariancia amostral: %.4f\n',pdNBShapeView(2));
+fprintf(fileID, '\tIC para Variancia amostral: %.4f - %.4f\n\n',ciNBShapeView(1,2),ciNBShapeView(2,2));
+
+fprintf(fileID, 'Naive Bayes - RGB View\n');
+fprintf(fileID, '\tMedia amostral: %.4f\n',pdNBRGBView(1));
+fprintf(fileID, '\tIC para Media amostral: %.4f - %.4f\n',ciNBRGBView(1,1),ciNBRGBView(2,1));
+fprintf(fileID, '\tVariancia amostral: %.4f\n',pdNBRGBView(2));
+fprintf(fileID, '\tIC para Variancia amostral: %.4f - %.4f\n\n',ciNBRGBView(1,2),ciNBRGBView(2,2));
+
+fprintf(fileID, 'KNN - Shape View\n');
+fprintf(fileID, '\tMedia amostral: %.4f\n',pdKNNShapeView(1));
+fprintf(fileID, '\tIC para Media amostral: %.4f - %.4f\n',ciKNNShapeView(1,1),ciKNNShapeView(2,1));
+fprintf(fileID, '\tVariancia amostral: %.4f\n',pdKNNShapeView(2));
+fprintf(fileID, '\tIC para Variancia amostral: %.4f - %.4f\n\n',ciKNNShapeView(1,2),ciKNNShapeView(2,2));
+
+fprintf(fileID, 'KNN - RGB View\n');
+fprintf(fileID, '\tMedia amostral: %.4f\n',pdKNNRGBView(1));
+fprintf(fileID, '\tIC para Media amostral: %.4f - %.4f\n',ciKNNRGBView(1,1),ciKNNRGBView(2,1));
+fprintf(fileID, '\tVariancia amostral: %.4f\n',pdKNNRGBView(2));
+fprintf(fileID, '\tIC para Variancia amostral: %.4f - %.4f\n\n',ciKNNRGBView(1,2),ciKNNRGBView(2,2));
+
+fprintf(fileID, 'Voto Majoritario\n');
+fprintf(fileID, '\tMedia amostral: %.4f\n',pdVote(1));
+fprintf(fileID, '\tIC para Media amostral: %.4f - %.4f\n',ciVote(1,1),ciVote(2,1));
+fprintf(fileID, '\tVariancia amostral: %.4f\n',pdVote(2));
+fprintf(fileID, '\tIC para Variancia amostral: %.4f - %.4f\n',ciVote(1,2),ciVote(2,2));
+fprintf(fileID, '--------------------------------------------------------------------------------\n');
 
 
+fprintf(fileID, '--------------------------------------------------------------------------------\n');
+fprintf(fileID, 'Teste de Friedman para a taxa de acerto medio (alpha = 0.05)\n');
+fprintf(fileID, '--------------------------------------------------------------------------------\n');
+fprintf(fileID, 'Media dos ranques\n');
+fprintf(fileID, '\tNaive Bayes - Shape View   -> %.2f\n',meanRanks(1));
+fprintf(fileID, '\tNaive Bayes - RGB View     -> %.2f\n',meanRanks(2));
+fprintf(fileID, '\tKNN - Shape View           -> %.2f\n',meanRanks(3));
+fprintf(fileID, '\tKNN - RGB View             -> %.2f\n',meanRanks(4));
+fprintf(fileID, '\tVoto Majoritario           -> %.2f\n\n',meanRanks(5));
 
+fprintf(fileID, 'Valor critico: %.2f\n\n', cValue);
 
+fprintf(fileID, 'Estatistica de teste (F): %.2f\n\n', double(stt));
 
+fprintf(fileID, 'Resultado do teste: \n');
+if hypothesis == 1
+   fprintf(fileID, '\tRejeita a hipotese nula\n\n');
+   fprintf(fileID, 'Resultado da aplicacao de Nemenyi teste:\n');
+   
+   fprintf(fileID, '\t1 - Naive Bayes - Shape View\n');
+   fprintf(fileID, '\t2 - Naive Bayes - RGB View\n');
+   fprintf(fileID, '\t3 - KNN - Shape View\n');
+   fprintf(fileID, '\t4 - KNN - RGB View\n');
+   fprintf(fileID, '\t5 - Voto Majoritario\n\n');
 
+   fprintf(fileID, '\t   ');
+   for i=1:size(ntest,1)
+       fprintf(fileID, ' %d',i);
+   end
+   fprintf(fileID, '\n');
+   
+   fprintf(fileID, '\t   ');
+   for i=1:size(ntest,1)
+       fprintf(fileID, ' |');
+   end
+   fprintf(fileID, '\n');
+   
+   for i=1:size(ntest,1)
+       fprintf(fileID, '\t%d -',i);
+       for j=1:size(ntest,2)
+           fprintf(fileID, ' %d',ntest(i,j));
+       end
+       fprintf(fileID, '\n');
+   end
+   
+else
+    fprintf(fileID, 'Aceita a hipotese nula\n');
+end
+fprintf(fileID, '--------------------------------------------------------------------------------\n');

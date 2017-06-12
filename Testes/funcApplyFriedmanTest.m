@@ -13,7 +13,7 @@
 %             de liberdade
 
 %%
-function [hypothesis, fEst, cValue, meanRanks] = funcApplyFriedmanTest(x, conf)
+function [hypothesis, stt, cValue, meanRanks] = funcApplyFriedmanTest(x, conf)
     
     [N, k] = size(x);
     
@@ -26,13 +26,19 @@ function [hypothesis, fEst, cValue, meanRanks] = funcApplyFriedmanTest(x, conf)
     
     % test estatístic
     X2_F = ((12*N)/(k*k+k))*(sum(meanRanks.^2) - (k*(k+1)^2)/4);
-    fEst = ((N-1)*X2_F) / (N*(k-1)-X2_F + eps);
     
-    % critical value
-    cValue = finv(conf,k-1,(k-1)*(N-1));
-    
-    % result
-    hypothesis = fEst > cValue;
+    if N>10 || k>5
+        %Use Chi-square 
+        cValue = chi2inv(conf,k-1);
+        hypothesis = X2_F > cValue;
+        stt = X2_F;
+    else
+        %Use Ff
+        fEst = ((N-1)*X2_F) / (N*(k-1)-X2_F + eps);
+        cValue = finv(conf,k-1,(k-1)*(N-1));
+        hypothesis = fEst > cValue;
+        stt = fEst;
+    end
 end
 
 
@@ -40,4 +46,3 @@ end
 
 
 
-'

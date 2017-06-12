@@ -10,7 +10,7 @@
 %                 Dimensoes: k x k
 
 %%
-function [ntest] = funcApplyNemenyiTest(N, k, meanRanks, conf)
+function [ntest,qa] = funcApplyNemenyiTest(N, k, meanRanks, conf)
     
     ntest = zeros(k);
 
@@ -29,6 +29,7 @@ function [ntest] = funcApplyNemenyiTest(N, k, meanRanks, conf)
         idx = 3;
     end
     
+    qa = q_alpha(idx,k-1);
     cd = q_alpha(idx,k-1)*sqrt((k*(k+1))/(6*N));
     
     for i=1:k
