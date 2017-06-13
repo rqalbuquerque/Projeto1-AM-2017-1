@@ -37,7 +37,7 @@ for aplic = 1: 1
     J = objective( vector_matrix_dissimilarity,vector_prototypes,vector_weights,matrix_membership_degree, 7,2100,3 );
     f = [f J];
     J
-    for iterator = 1 : 20
+    for iterator = 1 : 50
         
         % calculate prototypes
         vector_prototypes = prototypes( vector_matrix_dissimilarity,vector_weights,matrix_membership_degree,2100,7,3);
@@ -94,7 +94,7 @@ for aplic = 1: 1
 end
 
 %retorna o resultado da melhor partição
-result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view,vector_prototypes);
+result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view,vector_prototypes,best_J);
 
 
 

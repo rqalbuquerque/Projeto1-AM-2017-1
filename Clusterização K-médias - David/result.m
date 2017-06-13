@@ -1,10 +1,17 @@
-function  result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view ,vector_prototypes)
+function  result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view ,vector_prototypes,best_J)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
+y = best_J/norm(best_J);
+x = (1:length(best_J));
+plot(x,y,'b:o');
+title('Gráfico dos valores do criterio da melhor partição');
+xlabel('Iterações');
+ylabel('Valores do critério');
+grid on;
 fprintf('\n###### Prototipos ######\n');
 for i = 1 : 7
     g = sprintf('%d ', vector_prototypes{i});
-    fprintf('Group %d: [ %s ] \n',i,g );
+    fprintf('Grupo %d: [ %s ] \n',i,g );
 end
 
 
