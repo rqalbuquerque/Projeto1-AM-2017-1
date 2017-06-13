@@ -4,7 +4,7 @@ shape_view_order = '../Data Base Image Segmentation/shape_view_order.csv';
 RGB_view_order = '../Data Base Image Segmentation/RGB_view_order.csv';
 delimiterIn = ',';
 headerlinesIn = 1;
-%obtendo as views que ser„o utilizadas para obter a partiÁ„o
+%obtendo as views que ser√£o utilizadas para obter a parti√ß√£o
 RGB_view = importdata(RGB_view_order,delimiterIn,headerlinesIn);
 shape_view = importdata(shape_view_order,delimiterIn,headerlinesIn);
 hard_partition = cell(7,1);
@@ -15,14 +15,14 @@ vector_matrix_dissimilarity = cell(2,1);
 vector_matrix_dissimilarity{1} = squareform(pdist(shape_view.data,'euclidean'));  % euclidean distance
 vector_matrix_dissimilarity{2} = squareform(pdist(RGB_view.data,'euclidean'));  % euclidean distance
 
-%condiÁ„o de parada
+%condi√ß√£o de parada
 epson = 10^(-5);
 
-%agrupa os valores da funÁ„o objetivo
+%agrupa os valores da fun√ß√£o objetivo
 f = [];
 
-for aplic = 1: 1
-    % InicializaÁ„o
+for aplic = 1: 100
+    % Inicializa√ß√£o
     [ vector_weights, vector_prototypes] = initParams(2100,7);
     fprintf('\n###### Prototipos ######\n');
     for i = 1 : 7
@@ -61,14 +61,15 @@ for aplic = 1: 1
         f = [f J];
         J
         
+        %avalia se a condicao de parada epson for alcada as interacoes sao interrompidas
         if abs(f(iterator) - J) < epson
-            iterator = 20;
+            break;
         end
         
     end
     
-    %caso for a primeira aplicaÁ„o aramazenar o primeiro J, caso contrario
-    %ir· comparar os demais J's obtidos nas demais aplicaÁıes para se obter
+    %caso for a primeira aplica√ß√£o aramazenar o primeiro J, caso contrario
+    %ir√° comparar os demais J's obtidos nas demais aplica√ß√µes para se obter
     %o melhor
     if aplic == 1
         best_vector_prototypes = vector_prototypes;
@@ -86,14 +87,14 @@ for aplic = 1: 1
         end
     end
     
-    fprintf('\nAplicaÁ„o %d: %f\n',aplic,J);
+    fprintf('\nAplica√ß√£o %d: %f\n',aplic,J);
     
     f = [];
     
     
 end
 
-%retorna o resultado da melhor partiÁ„o
+%retorna o resultado da melhor parti√ß√£o
 result( best_matrix_membership_degree,best_vector_weights,final_j,shape_view,vector_prototypes,best_J);
 
 
