@@ -10,7 +10,7 @@ Y = dados.data(1:4177,9);
 tabulate(Y);
 
 %Declaração das classes na ordem que aparecem nos dados
-classNames = 1:1:3;
+classNames = 1:3;
 %Declarações dos preditores
 predictorNames = {'Sex','Length','Diameter','Height','Whole weight','Shucked weight','Viscera weight','Shell weight'};
 %Nome da coluna das classes
@@ -21,6 +21,8 @@ clear accuracyKnn
 accuracyKnn = 1:30;
 clear accuracySvm
 accuracySvm = 1:30;
+clear accuracyTree
+accuracyTree = 1:30;
 %clear accuracyKnnAfterkfold
 %accuracyKnnAfterkfold = 1:64;
 
@@ -42,13 +44,17 @@ for n = 1:64
 end
 %}
 
-% Função KNN
+% Modelo KNN
 knnModel = fitcknn(dados.data(1:4177,1:8),Y,'ClassNames',classNames,'Distance','euclidean','ResponseName',responseName,'PredictorNames',predictorNames,'Standardize',1,'NumNeighbors',22); %22 melhor acurácia
 
 % Modelo SVM multiclass (one-versus-one)
 % t is a template object that contains options for SVM classification. 
 t = templateSVM('Standardize',1,'SaveSupportVectors',true);
 svmModel = fitcecoc(dados.data(1:4177,1:8), Y,'Learners',t,'ResponseName',responseName,'PredictorNames',predictorNames,'ClassNames',classNames);
+
+% Modelo árvore de decisão
+treeModel = fitctree(dados.data(1:4177,1:8),Y,'ResponseName',responseName,'PredictorNames',predictorNames,'ClassNames',classNames);
+
 
 %Loop para 30 repeated 10-fold cross validation
 for i = 1:30
@@ -60,8 +66,12 @@ for i = 1:30
     % Cross validation 10-fold svm
     svmModelCV = crossval(svmModel,'cvpartition',stratifiedKfold);
     accuracySvm(i) = sum(Y==kfoldPredict(svmModelCV))/ numel(Y);
+    % Cross validation 10-fold árvore de decisão
+    treeModelCV = crossval(treeModel,'cvpartition',stratifiedKfold);
+    accuracyTree(i) = sum(Y==kfoldPredict(treeModelCV))/ numel(Y);
 end
 
 %Média da acurácia após o 30 repeated 10-fold cross validation
 accuracyKnnAfterkfold = sum(accuracyKnn)/30; 
-accuracySvmAfterkfold = sum(accuracySvm)/30; 
+accuracySvmAfterkfold = sum(accuracySvm)/30;
+accuracyTreeAfterkfold = sum(accuracyTree)/30;
